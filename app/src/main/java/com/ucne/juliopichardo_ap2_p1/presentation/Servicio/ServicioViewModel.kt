@@ -1,4 +1,4 @@
-package com.ucne.juliopichardo_ap2_p1.presentation
+package com.ucne.juliopichardo_ap2_p1.presentation.Servicio
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
