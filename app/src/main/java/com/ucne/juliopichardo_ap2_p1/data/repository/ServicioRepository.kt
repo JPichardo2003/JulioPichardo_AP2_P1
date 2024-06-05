@@ -8,4 +8,5 @@ class ServicioRepository(private val servicioDao: ServicioDao) {
     suspend fun deleteServicio(servicio: ServicioEntity) = servicioDao.delete(servicio)
     fun getServicios() = servicioDao.getAll()
     suspend fun getServicio(id: Int) = servicioDao.find(id)
+    suspend fun descripcionExist(id: Int, nombre: String): Boolean = servicioDao.descripcionExist(id,nombre)
 }
