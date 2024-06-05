@@ -1,4 +1,4 @@
-package com.ucne.juliopichardo_ap2_p1.presentation.Servicio
+package com.ucne.juliopichardo_ap2_p1.presentation.servicio
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

@@ -7,9 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
-import com.ucne.juliopichardo_ap2_p1.presentation.Servicio.ServicioListScreen
-import com.ucne.juliopichardo_ap2_p1.presentation.Servicio.ServicioScreen
-import com.ucne.juliopichardo_ap2_p1.presentation.Servicio.ServicioViewModel
+import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioListScreen
+import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioScreen
+import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioViewModel
 
 @Composable
 fun Parcial1NavHost(

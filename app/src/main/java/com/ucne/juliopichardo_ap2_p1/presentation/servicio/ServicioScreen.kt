@@ -1,4 +1,4 @@
-package com.ucne.juliopichardo_ap2_p1.presentation.Servicio
+package com.ucne.juliopichardo_ap2_p1.presentation.servicio
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
