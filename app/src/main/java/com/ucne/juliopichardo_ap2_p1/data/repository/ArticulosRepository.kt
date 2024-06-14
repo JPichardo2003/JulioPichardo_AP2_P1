@@ -16,6 +16,10 @@ class ArticulosRepository @Inject constructor(
             emptyList()
         }
     }
+
+    suspend fun postArticulo(articulo: ArticulosDto) {
+        articulosApi.addArticulos(articulo)
+    }
 }
 
 sealed class Resource<T>(val data: T? = null, val message: String? = null) {

@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
+import com.ucne.juliopichardo_ap2_p1.presentation.articulo.ArticuloListScreen
+import com.ucne.juliopichardo_ap2_p1.presentation.articulo.ArticuloScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioListScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioViewModel
@@ -17,7 +19,7 @@ fun Parcial1NavHost(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = Screen.ServicioList
+        startDestination = Screen.ArticuloList
     ) {
         composable<Screen.ServicioList> {
             ServicioListScreen(
@@ -33,6 +35,22 @@ fun Parcial1NavHost(
             val args = it.toRoute<Screen.Servicio>()
             ServicioScreen(
                 goBackListScreen = { navHostController.navigate(Screen.ServicioList) }
+            )
+        }
+        composable<Screen.ArticuloList> {
+            ArticuloListScreen(
+                onVerArticulo = {
+                    navHostController.navigate(Screen.Articulo(it.articuloId ?: 0))
+                },
+                onAddArticulo = {
+                    navHostController.navigate(Screen.Articulo(0))
+                }
+            )
+        }
+        composable<Screen.Articulo> {
+            val args = it.toRoute<Screen.Articulo>()
+            ArticuloScreen(
+                goBackListScreen = { navHostController.navigate(Screen.ArticuloList) }
             )
         }
     }

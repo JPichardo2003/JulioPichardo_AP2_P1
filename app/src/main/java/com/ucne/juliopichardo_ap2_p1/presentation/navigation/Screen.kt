@@ -6,4 +6,8 @@ sealed class Screen {
     object ServicioList : Screen()
     @Serializable
     data class Servicio(val servicioId: Int) : Screen()
+    @Serializable
+    object ArticuloList : Screen()
+    @Serializable
+    data class Articulo(val articuloId: Int) : Screen()
 }

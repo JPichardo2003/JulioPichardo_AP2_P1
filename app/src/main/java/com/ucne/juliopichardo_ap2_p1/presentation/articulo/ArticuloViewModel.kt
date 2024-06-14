@@ -1,11 +1,9 @@
-package com.ucne.juliopichardo_ap2_p1.presentation.servicio
+package com.ucne.juliopichardo_ap2_p1.presentation.articulo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ucne.juliopichardo_ap2_p1.data.local.entities.ServicioEntity
 import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
 import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
-import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,23 +14,16 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class ServicioViewModel @Inject constructor(
-    private val repository: ServicioRepository
+class ArticuloViewModel @Inject constructor(
+    private val articulosRepository: ArticulosRepository
 ) : ViewModel() {
-    private var servicioId: Int = 0
-    var uiState = MutableStateFlow(ServicioUIState())
+    private var articuloId: Int = 0
+    var uiState = MutableStateFlow(ArticulosUIState())
         private set
-
-    val servicios = repository.getServicios()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
 
     init {
         viewModelScope.launch {
-            val servicio = repository.getServicio(servicioId)
+            /*val servicio = articulosRepository.getServicio(articuloId)
 
             servicio?.let {
                 uiState.update {
@@ -42,7 +33,7 @@ class ServicioViewModel @Inject constructor(
                         precio = servicio.precio
                     )
                 }
-            }
+            }*/
             //getArticulos()
         }
     }
@@ -73,53 +64,69 @@ class ServicioViewModel @Inject constructor(
 
     fun saveServicio() {
         viewModelScope.launch {
-            repository.saveServicio(uiState.value.toEntity())
+            try {
+                articulosRepository.postArticulo(uiState.value.toEntity())
+                //newServicio()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            //repository.saveServicio(uiState.value.toEntity())
         }
     }
 
     fun deleteServicio() {
         viewModelScope.launch {
-            repository.deleteServicio(uiState.value.toEntity())
+            //repository.deleteServicio(uiState.value.toEntity())
         }
     }
 
     fun newServicio() {
         viewModelScope.launch {
-            uiState.value = ServicioUIState()
+            uiState.value = ArticulosUIState()
+        }
+    }
+
+    fun getArticulos() {
+        viewModelScope.launch {
+            val articulos = articulosRepository.getArticulos()
+            uiState.update {
+                it.copy(articulos = articulos)
+            }
         }
     }
 
     fun validation(): Boolean {
         val descripcionEmpty = uiState.value.descripcion.isEmpty()
         val precioEmpty = (uiState.value.precio ?: 0.0) <= 0.0
-        val descripcionExists = runBlocking { descripcionExists() }
+        /*val descripcionExists = runBlocking { descripcionExists() }
         if (descripcionExists) {
             uiState.update { it.copy(descripcionError = "Ya existe un servicio con esa descripción") }
-        }
+        }*/
         if (descripcionEmpty) {
             uiState.update { it.copy(descripcionError = "Campo Obligatorio") }
         }
         if (precioEmpty) {
             uiState.update { it.copy(precioError = "Debe ingresar un precio") }
         }
-        return !descripcionEmpty && !precioEmpty && !descripcionExists
+        return !descripcionEmpty && !precioEmpty
     }
 
-    private suspend fun descripcionExists(): Boolean {
-        return repository.descripcionExist(uiState.value.servicioId ?: 0, uiState.value.descripcion)
-    }
+    /*private suspend fun descripcionExists(): Boolean {
+        return articulosRepository.descripcionExist(uiState.value.servicioId ?: 0, uiState.value.descripcion)
+    }*/
 }
 
-data class ServicioUIState(
-    val servicioId: Int? = null,
+data class ArticulosUIState(
+    val articuloId: Int? = null,
     var descripcion: String = "",
     var descripcionError: String? = null,
     var precio: Double? = null,
-    var precioError: String? = null
+    var precioError: String? = null,
+    val articulos: List<ArticulosDto> = emptyList(),
 )
 
-fun ServicioUIState.toEntity() = ServicioEntity(
-    servicioId = servicioId,
+fun ArticulosUIState.toEntity() = ArticulosDto(
+    articuloId = articuloId ?: 0,
     descripcion = descripcion,
-    precio = precio
+    precio = precio ?: 0.0
 )
