@@ -29,7 +29,7 @@ interface ServicioDao {
             SELECT 1 
             FROM Servicios 
             WHERE descripcion = :descripcion 
-            AND servicioId != :id
+            AND servicioId <> :id
             LIMIT 1
         )
     """)

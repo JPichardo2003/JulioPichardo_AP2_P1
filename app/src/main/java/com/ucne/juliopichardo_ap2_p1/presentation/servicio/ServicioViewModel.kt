@@ -3,17 +3,24 @@ package com.ucne.juliopichardo_ap2_p1.presentation.servicio
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ucne.juliopichardo_ap2_p1.data.local.entities.ServicioEntity
+import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
+import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
 import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class ServicioViewModel(
+@HiltViewModel
+class ServicioViewModel @Inject constructor(
     private val repository: ServicioRepository,
-    private val servicioId: Int
+    private val articulosRepository: ArticulosRepository
 ) : ViewModel() {
+    private var servicioId: Int = 0
     var uiState = MutableStateFlow(ServicioUIState())
         private set
 
@@ -37,6 +44,7 @@ class ServicioViewModel(
                     )
                 }
             }
+            //getArticulos()
         }
     }
 
@@ -83,20 +91,34 @@ class ServicioViewModel(
         }
     }
 
+    fun getArticulos() {
+        viewModelScope.launch {
+            val articulos = articulosRepository.getArticulos()
+            uiState.update {
+                it.copy(articulos = articulos)
+            }
+        }
+    }
+
     fun validation(): Boolean {
         val descripcionEmpty = uiState.value.descripcion.isEmpty()
         val precioEmpty = (uiState.value.precio ?: 0.0) <= 0.0
+        val descripcionExists = runBlocking { descripcionExists() }
+        if (descripcionExists) {
+            uiState.update { it.copy(descripcionError = "Ya existe un servicio con esa descripción") }
+        }
         if (descripcionEmpty) {
             uiState.update { it.copy(descripcionError = "Campo Obligatorio") }
         }
         if (precioEmpty) {
             uiState.update { it.copy(precioError = "Debe ingresar un precio") }
         }
-        return !descripcionEmpty && !precioEmpty
+        return !descripcionEmpty && !precioEmpty && !descripcionExists
     }
-    /*private suspend fun descripcionExists(): Boolean {
-        return repository.descripcionExist(uiState.value.servicioId?: 0, uiState.value.descripcion)
-    }*/
+
+    private suspend fun descripcionExists(): Boolean {
+        return repository.descripcionExist(uiState.value.servicioId ?: 0, uiState.value.descripcion)
+    }
 }
 
 data class ServicioUIState(
@@ -104,7 +126,8 @@ data class ServicioUIState(
     var descripcion: String = "",
     var descripcionError: String? = null,
     var precio: Double? = null,
-    var precioError: String? = null
+    var precioError: String? = null,
+    val articulos: List<ArticulosDto> = emptyList()
 )
 
 fun ServicioUIState.toEntity() = ServicioEntity(

@@ -14,7 +14,6 @@ import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioViewModel
 @Composable
 fun Parcial1NavHost(
     navHostController: NavHostController,
-    repository: ServicioRepository,
 ) {
     NavHost(
         navController = navHostController,
@@ -22,9 +21,6 @@ fun Parcial1NavHost(
     ) {
         composable<Screen.ServicioList> {
             ServicioListScreen(
-                viewModel = viewModel {
-                    ServicioViewModel(repository, 0)
-                },
                 onVerServicio = {
                     navHostController.navigate(Screen.Servicio(it.servicioId ?: 0))
                 },
@@ -36,9 +32,6 @@ fun Parcial1NavHost(
         composable<Screen.Servicio> {
             val args = it.toRoute<Screen.Servicio>()
             ServicioScreen(
-                viewModel = viewModel {
-                    ServicioViewModel(repository, args.servicioId)
-                },
                 goBackListScreen = { navHostController.navigate(Screen.ServicioList) }
             )
         }

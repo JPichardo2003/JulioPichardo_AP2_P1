@@ -3,6 +3,7 @@ package com.ucne.juliopichardo_ap2_p1.presentation.servicio
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,21 +25,67 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ucne.juliopichardo_ap2_p1.data.local.entities.ServicioEntity
 import com.ucne.juliopichardo_ap2_p1.ui.theme.JulioPichardo_AP2_P1Theme
+import com.ucne.juliopichardo_ap2_p1.ui.theme.Purple40
+import com.ucne.juliopichardo_ap2_p1.ui.theme.Purple80
+
 @Composable
 fun ServicioListScreen(
-    viewModel: ServicioViewModel,
+    viewModel: ServicioViewModel = hiltViewModel(),
     onVerServicio: (ServicioEntity) -> Unit,
     onAddServicio: () -> Unit
 ) {
     val servicios by viewModel.servicios.collectAsStateWithLifecycle()
-    ServicioListBody(
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp)
+    ) {
+        TextButton(
+            onClick = { viewModel.getArticulos() }
+        ) {
+            Text(text = "Get Articles", color = Purple40)
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "ID", modifier = Modifier.weight(0.10f))
+            Text(text = "Descripción", modifier = Modifier.weight(0.300f))
+            Text(text = "Precio", modifier = Modifier.weight(0.30f))
+        }
+
+        Divider()
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(uiState.articulos) { articulo ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = articulo.articuloId.toString(), modifier = Modifier.weight(0.10f))
+                    Text(text = articulo.descripcion, modifier = Modifier.weight(0.300f))
+                    Text(text = articulo.precio.toString(), modifier = Modifier.weight(0.30f))
+                }
+            }
+        }
+    }
+    /*ServicioListBody(
         servicios = servicios,
         onAddServicio = onAddServicio,
         onVerServicio = onVerServicio
-    )
+    )*/
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,6 +148,7 @@ fun ServicioListBody(
         }
     }
 }
+
 @Preview
 @Composable
 fun ServicioListPreview() {
