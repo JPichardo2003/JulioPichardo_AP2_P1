@@ -44,8 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ucne.juliopichardo_ap2_p1.R
-import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioUIState
-import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioViewModel
 import com.ucne.juliopichardo_ap2_p1.ui.theme.JulioPichardo_AP2_P1Theme
 
 @Composable
@@ -62,13 +60,13 @@ fun ArticuloScreen(
         onValidation = viewModel::validation,
         goBackListScreen = goBackListScreen,
         onSaveArticulo = {
-            viewModel.saveServicio()
+            viewModel.saveArticulo()
         },
         onDeleteArticulo = {
-            viewModel.deleteServicio()
+            viewModel.deleteArticulo()
         },
         onNewArticulo = {
-            viewModel.newServicio()
+            viewModel.newArticulo()
         }
     )
 }

@@ -110,7 +110,7 @@ fun ArticuloListBody(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            //.clickable { onVerArticulo(articulo) }
+                            .clickable { onVerArticulo(articulo) }
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {

@@ -2,8 +2,6 @@ package com.ucne.juliopichardo_ap2_p1.data.repository
 
 import com.ucne.juliopichardo_ap2_p1.data.remote.ArticulosApi
 import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ArticulosRepository @Inject constructor(
@@ -16,9 +14,23 @@ class ArticulosRepository @Inject constructor(
             emptyList()
         }
     }
+    suspend fun getArticulo(id: Int): ArticulosDto? {
+        return try {
+            articulosApi.getArticulo(id)
+        } catch (e: Exception) {
+            null
+        }
+    }
 
-    suspend fun postArticulo(articulo: ArticulosDto) {
+    suspend fun addArticulos(articulo: ArticulosDto) {
         articulosApi.addArticulos(articulo)
+    }
+
+    suspend fun updateArticulo(id: Int, articulo: ArticulosDto) {
+        articulosApi.updateArticulo(id, articulo)
+    }
+    suspend fun deleteArticulo(id: Int) {
+        articulosApi.deleteArticulo(id)
     }
 }
 

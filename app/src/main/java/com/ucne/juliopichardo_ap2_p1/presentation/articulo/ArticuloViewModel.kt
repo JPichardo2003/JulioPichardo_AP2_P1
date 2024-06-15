@@ -6,11 +6,8 @@ import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
 import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,21 +20,61 @@ class ArticuloViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            /*val servicio = articulosRepository.getServicio(articuloId)
-
-            servicio?.let {
+            val articulo = articulosRepository.getArticulo(articuloId)
+            articulo?.let {
                 uiState.update {
                     it.copy(
-                        servicioId = servicio.servicioId,
-                        descripcion = servicio.descripcion ?: "",
-                        precio = servicio.precio
+                        articuloId = articulo.articuloId,
+                        descripcion = articulo.descripcion,
+                        precio = articulo.precio
                     )
                 }
-            }*/
-            //getArticulos()
+            }
+            getArticulos()
+        }
+    }
+    fun saveArticulo() {
+        viewModelScope.launch {
+            try {
+                /*if (uiState.value.articuloId != null) {
+                    articulosRepository.updateArticulo( uiState.value.articuloId ?: 0,
+                        uiState.value.toEntity())
+                } else {*/
+                    articulosRepository.addArticulos(uiState.value.toEntity())
+                    //newArticulo()
+                //}
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            //repository.saveServicio(uiState.value.toEntity())
         }
     }
 
+    fun deleteArticulo() {
+        viewModelScope.launch {
+            articulosRepository.deleteArticulo(uiState.value.articuloId ?: 0)
+        }
+    }
+
+    fun newArticulo() {
+        viewModelScope.launch {
+            uiState.value = ArticulosUIState()
+        }
+    }
+
+    fun getArticulos() {
+        viewModelScope.launch {
+            val articulos = articulosRepository.getArticulos()
+            uiState.update {
+                it.copy(articulos = articulos)
+            }
+        }
+    }
+    /*private fun getArticulo(articuloId: Int) {
+        viewModelScope.launch {
+
+        }
+    }*/
     fun onDescripcionChanged(descripcion: String) {
         if (!descripcion.startsWith(" ")) {
             uiState.update {
@@ -62,38 +99,7 @@ class ArticuloViewModel @Inject constructor(
         }
     }
 
-    fun saveServicio() {
-        viewModelScope.launch {
-            try {
-                articulosRepository.postArticulo(uiState.value.toEntity())
-                //newServicio()
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
-            //repository.saveServicio(uiState.value.toEntity())
-        }
-    }
 
-    fun deleteServicio() {
-        viewModelScope.launch {
-            //repository.deleteServicio(uiState.value.toEntity())
-        }
-    }
-
-    fun newServicio() {
-        viewModelScope.launch {
-            uiState.value = ArticulosUIState()
-        }
-    }
-
-    fun getArticulos() {
-        viewModelScope.launch {
-            val articulos = articulosRepository.getArticulos()
-            uiState.update {
-                it.copy(articulos = articulos)
-            }
-        }
-    }
 
     fun validation(): Boolean {
         val descripcionEmpty = uiState.value.descripcion.isEmpty()
