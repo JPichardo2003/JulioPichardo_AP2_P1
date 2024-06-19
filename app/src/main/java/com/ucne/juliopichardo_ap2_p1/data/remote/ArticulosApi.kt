@@ -1,7 +1,6 @@
 package com.ucne.juliopichardo_ap2_p1.data.remote
 
 import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -21,6 +20,4 @@ interface ArticulosApi {
     suspend fun updateArticulo(@Path("id") id: Int, @Body articuloDto: ArticulosDto?): Response<ArticulosDto>
     @DELETE("api/Articulos/{id}")
     suspend fun deleteArticulo(@Path("id") id: Int): Response<Unit>
-
-
 }

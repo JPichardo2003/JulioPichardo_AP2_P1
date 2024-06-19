@@ -2,16 +2,20 @@ package com.ucne.juliopichardo_ap2_p1.data.repository
 
 import com.ucne.juliopichardo_ap2_p1.data.remote.ArticulosApi
 import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ArticulosRepository @Inject constructor(
     private val articulosApi: ArticulosApi
 ) {
-    suspend fun getArticulos(): List<ArticulosDto> {
-        return try {
-            articulosApi.getArticulos()
+    fun getArticulos(): Flow<Resource<List<ArticulosDto>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val articulos = articulosApi.getArticulos()
+            emit(Resource.Success(articulos))
         } catch (e: Exception) {
-            emptyList()
+            emit(Resource.Error(e.message ?: "Error desconocido"))
         }
     }
     suspend fun getArticulo(id: Int): ArticulosDto? {
@@ -26,9 +30,10 @@ class ArticulosRepository @Inject constructor(
         articulosApi.addArticulos(articulo)
     }
 
-    suspend fun updateArticulo(id: Int, articulo: ArticulosDto) {
-        articulosApi.updateArticulo(id, articulo)
+    suspend fun updateArticulo(articulo: ArticulosDto) {
+        articulosApi.updateArticulo(articulo.articuloId, articulo)
     }
+
     suspend fun deleteArticulo(id: Int) {
         articulosApi.deleteArticulo(id)
     }

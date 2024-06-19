@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,9 +50,15 @@ import com.ucne.juliopichardo_ap2_p1.ui.theme.JulioPichardo_AP2_P1Theme
 @Composable
 fun ArticuloScreen(
     viewModel: ArticuloViewModel = hiltViewModel(),
-    goBackListScreen: () -> Unit
+    goBackListScreen: () -> Unit,
+    articuloId: Int?
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = true) {
+        if (articuloId != null) {
+            viewModel.getArticulo(articuloId)
+        }
+    }
 
     ArticuloBody(
         uiState = uiState,
@@ -238,8 +245,8 @@ fun ArticuloBody(
                     if (showDialog) {
                         AlertDialog(
                             onDismissRequest = { showDialog = false },
-                            title = { Text("Eliminar Servicio") },
-                            text = { Text("¿Está seguro de que desea eliminar este servicio?") },
+                            title = { Text("Eliminar Articulo") },
+                            text = { Text("¿Está seguro de que desea eliminar este articulo?") },
                             confirmButton = {
                                 Button(
                                     onClick = {

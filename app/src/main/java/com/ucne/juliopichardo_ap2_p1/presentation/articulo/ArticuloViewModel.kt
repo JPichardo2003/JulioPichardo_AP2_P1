@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
 import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
+import com.ucne.juliopichardo_ap2_p1.data.repository.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,13 +17,13 @@ import javax.inject.Inject
 class ArticuloViewModel @Inject constructor(
     private val articulosRepository: ArticulosRepository
 ) : ViewModel() {
-    private var articuloId: Int = 0
+    private val articuloId: Int = 0
     var uiState = MutableStateFlow(ArticulosUIState())
         private set
 
     init {
         viewModelScope.launch {
-            val articulo = articulosRepository.getArticulo(articuloId)
+            /*val articulo = articulosRepository.getArticulo(articuloId)
             articulo?.let {
                 uiState.update {
                     it.copy(
@@ -29,24 +32,22 @@ class ArticuloViewModel @Inject constructor(
                         precio = articulo.precio
                     )
                 }
-            }
+            }*/
             getArticulos()
         }
     }
     fun saveArticulo() {
         viewModelScope.launch {
             try {
-                /*if (uiState.value.articuloId != null) {
-                    articulosRepository.updateArticulo( uiState.value.articuloId ?: 0,
-                        uiState.value.toEntity())
-                } else {*/
+                if (uiState.value.articuloId != null) {
+                    articulosRepository.updateArticulo(uiState.value.toEntity())
+                } else {
                     articulosRepository.addArticulos(uiState.value.toEntity())
                     //newArticulo()
-                //}
+                }
             }catch (e: Exception){
                 e.printStackTrace()
             }
-            //repository.saveServicio(uiState.value.toEntity())
         }
     }
 
@@ -63,18 +64,45 @@ class ArticuloViewModel @Inject constructor(
     }
 
     fun getArticulos() {
-        viewModelScope.launch {
-            val articulos = articulosRepository.getArticulos()
-            uiState.update {
-                it.copy(articulos = articulos)
+        articulosRepository.getArticulos().onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    uiState.update { it.copy(isLoading = true) }
+                    delay(2_000)
+                }
+                is Resource.Success -> {
+                    uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            articulos = result.data ?: emptyList()
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
+                }
             }
         }
     }
-    /*private fun getArticulo(articuloId: Int) {
+    fun getArticulo(articuloId: Int) {
         viewModelScope.launch {
-
+            val articulo = articulosRepository.getArticulo(articuloId)
+            articulo?.let {
+                uiState.update {
+                    it.copy(
+                        articuloId = articulo.articuloId,
+                        descripcion = articulo.descripcion,
+                        precio = articulo.precio
+                    )
+                }
+            }
         }
-    }*/
+    }
     fun onDescripcionChanged(descripcion: String) {
         if (!descripcion.startsWith(" ")) {
             uiState.update {
@@ -129,6 +157,8 @@ data class ArticulosUIState(
     var precio: Double? = null,
     var precioError: String? = null,
     val articulos: List<ArticulosDto> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )
 
 fun ArticulosUIState.toEntity() = ArticulosDto(

@@ -50,7 +50,8 @@ fun Parcial1NavHost(
         composable<Screen.Articulo> {
             val args = it.toRoute<Screen.Articulo>()
             ArticuloScreen(
-                goBackListScreen = { navHostController.navigate(Screen.ArticuloList) }
+                goBackListScreen = { navHostController.navigate(Screen.ArticuloList) },
+                articuloId = args.articuloId
             )
         }
     }
