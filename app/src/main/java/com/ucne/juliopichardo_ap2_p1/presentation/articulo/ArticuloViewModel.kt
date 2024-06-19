@@ -23,16 +23,6 @@ class ArticuloViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            /*val articulo = articulosRepository.getArticulo(articuloId)
-            articulo?.let {
-                uiState.update {
-                    it.copy(
-                        articuloId = articulo.articuloId,
-                        descripcion = articulo.descripcion,
-                        precio = articulo.precio
-                    )
-                }
-            }*/
             getArticulos()
         }
     }
