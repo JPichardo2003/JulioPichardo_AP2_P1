@@ -2,12 +2,13 @@ package com.ucne.juliopichardo_ap2_p1.presentation.articulo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
+import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticuloDto
 import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
 import com.ucne.juliopichardo_ap2_p1.data.repository.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,8 +19,9 @@ class ArticuloViewModel @Inject constructor(
     private val articulosRepository: ArticulosRepository
 ) : ViewModel() {
     private val articuloId: Int = 0
-    var uiState = MutableStateFlow(ArticulosUIState())
-        private set
+
+    private val _uiState = MutableStateFlow(ArticuloUIState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -33,7 +35,6 @@ class ArticuloViewModel @Inject constructor(
                     articulosRepository.updateArticulo(uiState.value.toEntity())
                 } else {
                     articulosRepository.addArticulos(uiState.value.toEntity())
-                    //newArticulo()
                 }
             }catch (e: Exception){
                 e.printStackTrace()
@@ -49,41 +50,37 @@ class ArticuloViewModel @Inject constructor(
 
     fun newArticulo() {
         viewModelScope.launch {
-            uiState.value = ArticulosUIState()
+            _uiState.value = ArticuloUIState()
         }
     }
 
     fun getArticulos() {
         articulosRepository.getArticulos().onEach { result ->
             when (result) {
-                is Resource.Loading -> {
-                    uiState.update { it.copy(isLoading = true) }
-                    delay(2_000)
+                is Resource.Loading -> _uiState.update {
+                    it.copy(isLoading = true)
                 }
-                is Resource.Success -> {
-                    uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            articulos = result.data ?: emptyList()
-                        )
-                    }
+                is Resource.Success -> _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        articulos = result.data ?: emptyList()
+                    )
                 }
-                is Resource.Error -> {
-                    uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = result.message
-                        )
-                    }
+                is Resource.Error -> _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
+
     fun getArticulo(articuloId: Int) {
         viewModelScope.launch {
             val articulo = articulosRepository.getArticulo(articuloId)
             articulo?.let {
-                uiState.update {
+                _uiState.update {
                     it.copy(
                         articuloId = articulo.articuloId,
                         descripcion = articulo.descripcion,
@@ -93,9 +90,10 @@ class ArticuloViewModel @Inject constructor(
             }
         }
     }
+
     fun onDescripcionChanged(descripcion: String) {
         if (!descripcion.startsWith(" ")) {
-            uiState.update {
+            _uiState.update {
                 it.copy(
                     descripcion = descripcion,
                     descripcionError = null
@@ -108,7 +106,7 @@ class ArticuloViewModel @Inject constructor(
         val regex = Regex("[0-9]{0,7}\\.?[0-9]{0,2}")
         if (precioStr.matches(regex)) {
             val total = precioStr.toDoubleOrNull() ?: 0.0
-            uiState.update {
+            _uiState.update {
                 it.copy(
                     precio = total,
                     precioError = null
@@ -117,41 +115,31 @@ class ArticuloViewModel @Inject constructor(
         }
     }
 
-
-
     fun validation(): Boolean {
         val descripcionEmpty = uiState.value.descripcion.isEmpty()
         val precioEmpty = (uiState.value.precio ?: 0.0) <= 0.0
-        /*val descripcionExists = runBlocking { descripcionExists() }
-        if (descripcionExists) {
-            uiState.update { it.copy(descripcionError = "Ya existe un servicio con esa descripción") }
-        }*/
         if (descripcionEmpty) {
-            uiState.update { it.copy(descripcionError = "Campo Obligatorio") }
+            _uiState.update { it.copy(descripcionError = "Campo Obligatorio") }
         }
         if (precioEmpty) {
-            uiState.update { it.copy(precioError = "Debe ingresar un precio") }
+            _uiState.update { it.copy(precioError = "Debe ingresar un precio") }
         }
         return !descripcionEmpty && !precioEmpty
     }
-
-    /*private suspend fun descripcionExists(): Boolean {
-        return articulosRepository.descripcionExist(uiState.value.servicioId ?: 0, uiState.value.descripcion)
-    }*/
 }
 
-data class ArticulosUIState(
+data class ArticuloUIState(
     val articuloId: Int? = null,
     var descripcion: String = "",
     var descripcionError: String? = null,
     var precio: Double? = null,
     var precioError: String? = null,
-    val articulos: List<ArticulosDto> = emptyList(),
+    val articulos: List<ArticuloDto> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
 
-fun ArticulosUIState.toEntity() = ArticulosDto(
+fun ArticuloUIState.toEntity() = ArticuloDto(
     articuloId = articuloId ?: 0,
     descripcion = descripcion,
     precio = precio ?: 0.0

@@ -28,14 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
+import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticuloDto
 import com.ucne.juliopichardo_ap2_p1.ui.theme.JulioPichardo_AP2_P1Theme
 import com.ucne.juliopichardo_ap2_p1.ui.theme.Purple40
 
 @Composable
 fun ArticuloListScreen(
     viewModel: ArticuloViewModel = hiltViewModel(),
-    onVerArticulo: (ArticulosDto) -> Unit,
+    onVerArticulo: (ArticuloDto) -> Unit,
     onAddArticulo: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -52,11 +52,11 @@ fun ArticuloListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticuloListBody(
-    uiState: ArticulosUIState,
+    uiState: ArticuloUIState,
     viewModel: ArticuloViewModel = hiltViewModel(),
-    articulos: List<ArticulosDto>,
+    articulos: List<ArticuloDto>,
     onAddArticulo: () -> Unit,
-    onVerArticulo: (ArticulosDto) -> Unit
+    onVerArticulo: (ArticuloDto) -> Unit
 ) {
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -142,7 +142,7 @@ fun ArticuloListBody(
 @Composable
 fun ArticuloListPreview() {
     val articulos = listOf(
-        ArticulosDto(
+        ArticuloDto(
             articuloId = 1,
             descripcion = "Servicio 1",
             precio = 10.0
@@ -153,7 +153,7 @@ fun ArticuloListPreview() {
             articulos = articulos,
             onAddArticulo = {},
             onVerArticulo = {},
-            uiState = ArticulosUIState()
+            uiState = ArticuloUIState()
         )
     }
 }

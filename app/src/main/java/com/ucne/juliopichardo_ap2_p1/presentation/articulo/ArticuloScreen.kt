@@ -81,7 +81,7 @@ fun ArticuloScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticuloBody(
-    uiState: ArticulosUIState,
+    uiState: ArticuloUIState,
     goBackListScreen: () -> Unit,
     onDescripcionChanged: (String) -> Unit,
     onPrecioChanged: (String) -> Unit,
@@ -281,7 +281,7 @@ fun Notification(message: String) {
 private fun ArticuloPreview() {
     JulioPichardo_AP2_P1Theme {
         ArticuloBody(
-            uiState = ArticulosUIState(),
+            uiState = ArticuloUIState(),
             goBackListScreen = {},
             onDescripcionChanged = {},
             onPrecioChanged = {},

@@ -3,8 +3,6 @@ package com.ucne.juliopichardo_ap2_p1.presentation.servicio
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ucne.juliopichardo_ap2_p1.data.local.entities.ServicioEntity
-import com.ucne.juliopichardo_ap2_p1.data.remote.dto.ArticulosDto
-import com.ucne.juliopichardo_ap2_p1.data.repository.ArticulosRepository
 import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
