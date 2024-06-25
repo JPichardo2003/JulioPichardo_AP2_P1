@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.ucne.juliopichardo_ap2_p1.data.repository.ServicioRepository
 import com.ucne.juliopichardo_ap2_p1.presentation.articulo.ArticuloListScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.articulo.ArticuloScreen
+import com.ucne.juliopichardo_ap2_p1.presentation.location.LocationScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioListScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioScreen
 import com.ucne.juliopichardo_ap2_p1.presentation.servicio.ServicioViewModel
@@ -44,7 +45,8 @@ fun Parcial1NavHost(
                 },
                 onAddArticulo = {
                     navHostController.navigate(Screen.Articulo(0))
-                }
+                },
+                goToLocationScreen = { navHostController.navigate(Screen.Location) }
             )
         }
         composable<Screen.Articulo> {
@@ -52,6 +54,11 @@ fun Parcial1NavHost(
             ArticuloScreen(
                 goBackListScreen = { navHostController.navigate(Screen.ArticuloList) },
                 articuloId = args.articuloId
+            )
+        }
+        composable<Screen.Location> {
+            LocationScreen(
+                goBackListScreen = { navHostController.navigate(Screen.ArticuloList) }
             )
         }
     }

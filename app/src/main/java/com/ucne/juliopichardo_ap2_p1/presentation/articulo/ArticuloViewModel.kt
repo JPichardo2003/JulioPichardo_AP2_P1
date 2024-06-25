@@ -25,7 +25,7 @@ class ArticuloViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getArticulos()
+            //getArticulos()
         }
     }
     fun saveArticulo() {

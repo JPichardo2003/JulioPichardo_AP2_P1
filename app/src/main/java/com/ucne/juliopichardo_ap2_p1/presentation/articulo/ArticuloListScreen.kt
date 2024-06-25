@@ -36,7 +36,8 @@ import com.ucne.juliopichardo_ap2_p1.ui.theme.Purple40
 fun ArticuloListScreen(
     viewModel: ArticuloViewModel = hiltViewModel(),
     onVerArticulo: (ArticuloDto) -> Unit,
-    onAddArticulo: () -> Unit
+    onAddArticulo: () -> Unit,
+    goToLocationScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -44,7 +45,8 @@ fun ArticuloListScreen(
         uiState = uiState,
         articulos = uiState.articulos,
         onAddArticulo = onAddArticulo,
-        onVerArticulo = onVerArticulo
+        onVerArticulo = onVerArticulo,
+        goToLocationScreen = goToLocationScreen
     )
 
 }
@@ -56,7 +58,8 @@ fun ArticuloListBody(
     viewModel: ArticuloViewModel = hiltViewModel(),
     articulos: List<ArticuloDto>,
     onAddArticulo: () -> Unit,
-    onVerArticulo: (ArticuloDto) -> Unit
+    onVerArticulo: (ArticuloDto) -> Unit,
+    goToLocationScreen: () -> Unit
 ) {
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -68,13 +71,20 @@ fun ArticuloListBody(
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Articulos")
+                        Text(text = "Articles")
 
                         TextButton(
                             onClick = { viewModel.getArticulos() }
                         ) {
                             Text(text = "Get Articles", color = Purple40)
                         }
+
+                        TextButton(
+                            onClick = { goToLocationScreen() }
+                        ) {
+                            Text(text = "Get Location", color = Purple40)
+                        }
+
                     }
                 }
             )
@@ -153,6 +163,7 @@ fun ArticuloListPreview() {
             articulos = articulos,
             onAddArticulo = {},
             onVerArticulo = {},
+            goToLocationScreen = {},
             uiState = ArticuloUIState()
         )
     }

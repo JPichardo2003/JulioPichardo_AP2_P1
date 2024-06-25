@@ -15,9 +15,9 @@ interface ArticulosApi {
     @GET("api/Articulos")
     suspend fun getArticulos(): List<ArticuloDto>
     @POST("api/Articulos")
-    suspend fun addArticulos(@Body articuloDto: ArticuloDto?): Response<ArticuloDto>
+    suspend fun addArticulos(@Body articuloDto: ArticuloDto?): ArticuloDto
     @PUT("api/Articulos/{id}")
-    suspend fun updateArticulo(@Path("id") id: Int, @Body articuloDto: ArticuloDto?): Response<ArticuloDto>
+    suspend fun updateArticulo(@Path("id") id: Int, @Body articuloDto: ArticuloDto?): ArticuloDto
     @DELETE("api/Articulos/{id}")
     suspend fun deleteArticulo(@Path("id") id: Int): Response<Unit>
 }
