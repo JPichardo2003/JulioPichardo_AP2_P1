@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,10 +49,16 @@ import com.ucne.juliopichardo_ap2_p1.ui.theme.JulioPichardo_AP2_P1Theme
 @Composable
 fun ServicioScreen(
     viewModel: ServicioViewModel = hiltViewModel(),
-    goBackListScreen: () -> Unit
+    goBackListScreen: () -> Unit,
+    servicioId: Int?
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     viewModel.servicios.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = true) {
+        if (servicioId != null) {
+            viewModel.getServicio(servicioId)
+        }
+    }
 
     ServicioBody(
         uiState = uiState,

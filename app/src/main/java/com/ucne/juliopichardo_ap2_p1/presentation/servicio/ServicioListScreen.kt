@@ -36,14 +36,16 @@ import com.ucne.juliopichardo_ap2_p1.ui.theme.Purple80
 fun ServicioListScreen(
     viewModel: ServicioViewModel = hiltViewModel(),
     onVerServicio: (ServicioEntity) -> Unit,
-    onAddServicio: () -> Unit
+    onAddServicio: () -> Unit,
+    goToArticlesList: () -> Unit
 ) {
     val servicios by viewModel.servicios.collectAsStateWithLifecycle()
 
     ServicioListBody(
         servicios = servicios,
         onAddServicio = onAddServicio,
-        onVerServicio = onVerServicio
+        onVerServicio = onVerServicio,
+        goToArticlesList = goToArticlesList
     )
 }
 
@@ -52,13 +54,29 @@ fun ServicioListScreen(
 fun ServicioListBody(
     servicios: List<ServicioEntity>,
     onAddServicio: () -> Unit,
-    onVerServicio: (ServicioEntity) -> Unit
+    onVerServicio: (ServicioEntity) -> Unit,
+    goToArticlesList: () -> Unit
 ) {
     Scaffold (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Servicios") }
+                title = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Servicios")
+
+                        TextButton(
+                            onClick = { goToArticlesList() }
+                        ) {
+                            Text(text = "Get Articles", color = Purple40)
+                        }
+                    }
+
+                }
             )
         },
         floatingActionButton = {
@@ -98,9 +116,9 @@ fun ServicioListBody(
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = servicio.servicioId.toString(), modifier = Modifier.weight(0.12f))
-                        Text(text = servicio.descripcion.toString(), modifier = Modifier.weight(0.420f))
-                        Text(text = servicio.precio.toString(), modifier = Modifier.weight(0.30f))
+                        Text(text = servicio.servicioId.toString(), modifier = Modifier.weight(0.10f))
+                        Text(text = servicio.descripcion.toString(), modifier = Modifier.weight(0.350f))
+                        Text(text = servicio.precio.toString(), modifier = Modifier.weight(0.25f))
                     }
                 }
             }
@@ -122,7 +140,8 @@ fun ServicioListPreview() {
         ServicioListBody(
             servicios = servicios,
             onAddServicio = {},
-            onVerServicio = {}
+            onVerServicio = {},
+            goToArticlesList = {}
         )
     }
 }

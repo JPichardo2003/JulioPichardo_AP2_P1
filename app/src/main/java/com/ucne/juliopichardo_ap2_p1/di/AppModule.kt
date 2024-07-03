@@ -1,16 +1,11 @@
 package com.ucne.juliopichardo_ap2_p1.di
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.ucne.juliopichardo_ap2_p1.data.local.database.ServicioDb
-import com.ucne.juliopichardo_ap2_p1.data.location.DefaultLocationTracker
 import com.ucne.juliopichardo_ap2_p1.data.remote.ArticulosApi
-import com.ucne.juliopichardo_ap2_p1.domain.location.LocationTracker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,22 +49,4 @@ object AppModule {
             .build()
             .create(ArticulosApi::class.java)
     }
-
-    //location
-    @Provides
-    @Singleton
-    fun providesFusedLocationProviderClient(
-        application: Application
-    ): FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(application)
-
-    @Provides
-    @Singleton
-    fun providesLocationTracker(
-        fusedLocationProviderClient: FusedLocationProviderClient,
-        application: Application
-    ): LocationTracker = DefaultLocationTracker(
-        fusedLocationProviderClient = fusedLocationProviderClient,
-        application = application
-    )
 }

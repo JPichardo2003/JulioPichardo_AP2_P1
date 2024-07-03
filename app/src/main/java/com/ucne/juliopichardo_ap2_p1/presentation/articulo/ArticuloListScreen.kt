@@ -37,7 +37,7 @@ fun ArticuloListScreen(
     viewModel: ArticuloViewModel = hiltViewModel(),
     onVerArticulo: (ArticuloDto) -> Unit,
     onAddArticulo: () -> Unit,
-    goToLocationScreen: () -> Unit
+    goToServicioListScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -46,7 +46,7 @@ fun ArticuloListScreen(
         articulos = uiState.articulos,
         onAddArticulo = onAddArticulo,
         onVerArticulo = onVerArticulo,
-        goToLocationScreen = goToLocationScreen
+        goToServicioListScreen = goToServicioListScreen
     )
 
 }
@@ -59,7 +59,7 @@ fun ArticuloListBody(
     articulos: List<ArticuloDto>,
     onAddArticulo: () -> Unit,
     onVerArticulo: (ArticuloDto) -> Unit,
-    goToLocationScreen: () -> Unit
+    goToServicioListScreen: () -> Unit
 ) {
     Scaffold (
         modifier = Modifier.fillMaxSize(),
@@ -80,11 +80,10 @@ fun ArticuloListBody(
                         }
 
                         TextButton(
-                            onClick = { goToLocationScreen() }
+                            onClick = { goToServicioListScreen() }
                         ) {
-                            Text(text = "Get Location", color = Purple40)
+                            Text(text = "Get Services", color = Purple40)
                         }
-
                     }
                 }
             )
@@ -163,7 +162,7 @@ fun ArticuloListPreview() {
             articulos = articulos,
             onAddArticulo = {},
             onVerArticulo = {},
-            goToLocationScreen = {},
+            goToServicioListScreen = {},
             uiState = ArticuloUIState()
         )
     }

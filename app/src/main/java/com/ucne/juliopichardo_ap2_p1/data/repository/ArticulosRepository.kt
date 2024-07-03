@@ -24,7 +24,9 @@ class ArticulosRepository @Inject constructor(
         return try {
             articulosApi.getArticulo(id)
         } catch (e: Exception) {
-            null
+            Log.e("ArticulosRepository", "getArticulo: ${e.message}")
+            val articulo: ArticuloDto? = null
+            articulo
         }
     }
 

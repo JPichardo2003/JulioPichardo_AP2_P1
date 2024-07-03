@@ -17,7 +17,7 @@ import javax.inject.Inject
 class ServicioViewModel @Inject constructor(
     private val repository: ServicioRepository
 ) : ViewModel() {
-    private var servicioId: Int = 0
+
     var uiState = MutableStateFlow(ServicioUIState())
         private set
 
@@ -30,18 +30,7 @@ class ServicioViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val servicio = repository.getServicio(servicioId)
-
-            servicio?.let {
-                uiState.update {
-                    it.copy(
-                        servicioId = servicio.servicioId,
-                        descripcion = servicio.descripcion ?: "",
-                        precio = servicio.precio
-                    )
-                }
-            }
-            //getArticulos()
+            //getServicio(servicioId)
         }
     }
 
@@ -65,6 +54,21 @@ class ServicioViewModel @Inject constructor(
                     precio = total,
                     precioError = null
                 )
+            }
+        }
+    }
+
+    fun getServicio(servicioId: Int) {
+        viewModelScope.launch {
+            val servicio = repository.getServicio(servicioId)
+            servicio?.let {
+                uiState.update {
+                    it.copy(
+                        servicioId = servicio.servicioId,
+                        descripcion = servicio.descripcion ?: "",
+                        precio = servicio.precio
+                    )
+                }
             }
         }
     }

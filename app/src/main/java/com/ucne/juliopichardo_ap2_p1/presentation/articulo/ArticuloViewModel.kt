@@ -18,7 +18,6 @@ import javax.inject.Inject
 class ArticuloViewModel @Inject constructor(
     private val articulosRepository: ArticulosRepository
 ) : ViewModel() {
-    private val articuloId: Int = 0
 
     private val _uiState = MutableStateFlow(ArticuloUIState())
     val uiState = _uiState.asStateFlow()

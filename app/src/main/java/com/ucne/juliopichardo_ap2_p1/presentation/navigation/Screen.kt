@@ -10,6 +10,4 @@ sealed class Screen {
     object ArticuloList : Screen()
     @Serializable
     data class Articulo(val articuloId: Int) : Screen()
-    @Serializable
-    object Location : Screen()
 }
